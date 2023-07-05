@@ -30,8 +30,8 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -70,6 +70,7 @@ namespace AfisLite.Broker.Infra.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte[]>("Template")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<int>("Type")
@@ -90,9 +91,8 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

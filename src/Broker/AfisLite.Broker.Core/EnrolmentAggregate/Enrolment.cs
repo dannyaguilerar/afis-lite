@@ -12,7 +12,7 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate
         public string UniqueId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         public virtual Person Person { get; set; }
         public virtual ICollection<Fingerprint> Fingerprints { get; set; } = new HashSet<Fingerprint>();

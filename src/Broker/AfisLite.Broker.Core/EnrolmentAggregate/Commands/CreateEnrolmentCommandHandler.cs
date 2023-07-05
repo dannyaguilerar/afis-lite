@@ -14,22 +14,28 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate.Commands
         private readonly IRepository<Person> _personRepository;
         private readonly IRepository<Fingerprint> _fingerprintRepository;
         private readonly IExtractorService _extractorService;
+        private readonly IMatcherService _matcherService;
 
         public CreateEnrolmentCommandHandler(
             IRepository<Enrolment> enrolmentRepository,
             IRepository<Person> personRepository,
             IRepository<Fingerprint> fingerprintRepository,
-            IExtractorService extractorService)
+            IExtractorService extractorService,
+            IMatcherService matcherService)
         {
             _enrolmentRepository = enrolmentRepository;
             _personRepository = personRepository;
             _fingerprintRepository = fingerprintRepository;
             _extractorService = extractorService;
+            _matcherService = matcherService;
+
         }
 
         public async Task Handle(CreateEnrolmentCommand request, CancellationToken cancellationToken)
         {
-            var probe = new List<FingerprintRecord>();
+            /// Extract the fingerprints in base64 and convert them into byte array.
+            /// Validation should come from a behaviour in the pipeline.
+            var probeFingerprints = new List<FingerprintRecord>();
             foreach (var fp in request.Fingerprints)
             {
                 var serialize = Convert.FromBase64String(fp.Data);
@@ -38,21 +44,34 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate.Commands
                     Type = fp.Type,
                     Template = _extractorService.ExtractTemplate(serialize).Template
                 };
-                probe.Add(probeFingerprint);
+                probeFingerprints.Add(probeFingerprint);
             }
 
             var candidates = await _enrolmentRepository.ListAsync(new EnrolmentRecordSpec(), cancellationToken);
 
-            double score = 0;
+            MatcherResponse? response = null;
+            var matchedPersonId = 0;
             if (candidates.Any())
             {
                 foreach (var candidate in candidates)
                 {
-
+                    response = _matcherService.MatcheFingerprints(probeFingerprints, candidate.Fingerprints);
+                    if (response.IsMatch)
+                    {
+                        matchedPersonId = candidate.PersonId;
+                        break;
+                    }
                 }
-            } 
-            
-            if (candidates.Any() || score >= 40)
+            }
+
+            var personId = 0;
+            var status = EnrolmentStatus.Archived;
+            if (response != null && response.IsMatch)
+            {
+                personId = matchedPersonId;
+                status = EnrolmentStatus.Duplicate;
+            }
+            else
             {
                 var person = new Person
                 {
@@ -63,28 +82,32 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate.Commands
                 };
                 await _personRepository.AddAsync(person, cancellationToken);
                 await _personRepository.SaveChangesAsync(cancellationToken);
-                
-                var enrolment = new Enrolment
-                {
-                    PersonId = person.Id,
-                    UniqueId = request.UniqueId,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    DateOfBirth = request.DateOfBirth,
-                    Status = EnrolmentStatus.Principal,
-                };
-                await _enrolmentRepository.AddAsync(enrolment, cancellationToken);
-                await _enrolmentRepository.SaveChangesAsync();
 
-                var fingerprints = probe.Select(p => new Fingerprint
-                {
-                    EnrolmentId = enrolment.Id,
-                    Type = p.Type,
-                    Template = p.Template,
-                });
-                await _fingerprintRepository.AddRangeAsync(fingerprints, cancellationToken);
-                await _fingerprintRepository.SaveChangesAsync();
+                personId = person.Id;
+                status = EnrolmentStatus.Principal;
             }
+
+
+            var enrolment = new Enrolment
+            {
+                PersonId = personId,
+                UniqueId = request.UniqueId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                DateOfBirth = request.DateOfBirth,
+                Status = status,
+            };
+            await _enrolmentRepository.AddAsync(enrolment, cancellationToken);
+            await _enrolmentRepository.SaveChangesAsync();
+
+            var fingerprints = probeFingerprints.Select(p => new Fingerprint
+            {
+                EnrolmentId = enrolment.Id,
+                Type = p.Type,
+                Template = p.Template,
+            });
+            await _fingerprintRepository.AddRangeAsync(fingerprints, cancellationToken);
+            await _fingerprintRepository.SaveChangesAsync();
         }
     }
 }

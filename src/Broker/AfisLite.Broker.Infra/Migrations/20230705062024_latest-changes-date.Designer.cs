@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AfisLite.Broker.Infra.Migrations
 {
     [DbContext(typeof(AfisLiteDbContext))]
-    [Migration("20230625212500_AddActionsAndNewTables")]
-    partial class AddActionsAndNewTables
+    [Migration("20230705062024_latest-changes-date")]
+    partial class latestchangesdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,8 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -58,7 +58,7 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("Enrolment");
+                    b.ToTable("Enrolments");
                 });
 
             modelBuilder.Entity("AfisLite.Broker.Core.FingerprintAggregate.Fingerprint", b =>
@@ -73,6 +73,7 @@ namespace AfisLite.Broker.Infra.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte[]>("Template")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<int>("Type")
@@ -93,9 +94,8 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -138,7 +138,7 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("Search");
+                    b.ToTable("Searches");
                 });
 
             modelBuilder.Entity("AfisLite.Broker.Core.VerifyAggregate.Verify", b =>

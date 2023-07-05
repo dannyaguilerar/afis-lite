@@ -26,9 +26,9 @@ namespace AfisLite.Broker.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index([FromBody] CreateEnrolmentCommand command)
+        public async Task<IActionResult> Index([FromBody] CreateEnrolmentCommand command)
         {
-            _mediator.Send(command);
+            await _mediator.Send(command);
             return Ok();
         }
     }

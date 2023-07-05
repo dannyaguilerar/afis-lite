@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AfisLite.Broker.Infra.Migrations
 {
     [DbContext(typeof(AfisLiteDbContext))]
-    [Migration("20230625212709_ChangeEnrolmentTable")]
-    partial class ChangeEnrolmentTable
+    [Migration("20230705070108_latest-changes")]
+    partial class latestchanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,8 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -73,6 +73,7 @@ namespace AfisLite.Broker.Infra.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte[]>("Template")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<int>("Type")
@@ -93,9 +94,8 @@ namespace AfisLite.Broker.Infra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

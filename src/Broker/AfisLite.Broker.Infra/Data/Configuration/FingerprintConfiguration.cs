@@ -9,7 +9,7 @@ namespace AfisLite.Broker.Infra.Data.Configuration
         public void Configure(EntityTypeBuilder<Fingerprint> builder)
         {
             builder.Property(fp => fp.Id)
-                .UseIdentityColumn();
+                .UseIdentityAlwaysColumn();
             builder.Property(fp => fp.Type)
                 .HasConversion(
                     p => ((int)p),

@@ -20,8 +20,6 @@ namespace AfisLite.Broker.Infra
                 
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestStartedDatePipe<,>));
 
-            
-
             return services;
         }
     }

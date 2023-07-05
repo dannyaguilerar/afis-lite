@@ -7,27 +7,29 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AfisLite.Broker.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class AddActionsAndNewTables : Migration
+    public partial class latestchangesdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Fingerprints_People_PersonId",
-                table: "Fingerprints");
-
-            migrationBuilder.RenameColumn(
-                name: "PersonId",
-                table: "Fingerprints",
-                newName: "EnrolmentId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Fingerprints_PersonId",
-                table: "Fingerprints",
-                newName: "IX_Fingerprints_EnrolmentId");
+            migrationBuilder.CreateTable(
+                name: "People",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UniqueId = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_People", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
-                name: "Enrolment",
+                name: "Enrolments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -37,13 +39,13 @@ namespace AfisLite.Broker.Infra.Migrations
                     UniqueId = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Enrolment", x => x.Id);
+                    table.PrimaryKey("PK_Enrolments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Enrolment_People_PersonId",
+                        name: "FK_Enrolments_People_PersonId",
                         column: x => x.PersonId,
                         principalTable: "People",
                         principalColumn: "Id",
@@ -51,7 +53,7 @@ namespace AfisLite.Broker.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Search",
+                name: "Searches",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -63,9 +65,9 @@ namespace AfisLite.Broker.Infra.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Search", x => x.Id);
+                    table.PrimaryKey("PK_Searches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Search_People_MatchId",
+                        name: "FK_Searches_People_MatchId",
                         column: x => x.MatchId,
                         principalTable: "People",
                         principalColumn: "Id");
@@ -93,63 +95,65 @@ namespace AfisLite.Broker.Infra.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Fingerprints",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EnrolmentId = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Template = table.Column<byte[]>(type: "bytea", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fingerprints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Fingerprints_Enrolments_EnrolmentId",
+                        column: x => x.EnrolmentId,
+                        principalTable: "Enrolments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Enrolment_PersonId",
-                table: "Enrolment",
+                name: "IX_Enrolments_PersonId",
+                table: "Enrolments",
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Search_MatchId",
-                table: "Search",
+                name: "IX_Fingerprints_EnrolmentId",
+                table: "Fingerprints",
+                column: "EnrolmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Searches_MatchId",
+                table: "Searches",
                 column: "MatchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Verifies_CandidateId",
                 table: "Verifies",
                 column: "CandidateId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Fingerprints_Enrolment_EnrolmentId",
-                table: "Fingerprints",
-                column: "EnrolmentId",
-                principalTable: "Enrolment",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Fingerprints_Enrolment_EnrolmentId",
-                table: "Fingerprints");
+            migrationBuilder.DropTable(
+                name: "Fingerprints");
 
             migrationBuilder.DropTable(
-                name: "Enrolment");
-
-            migrationBuilder.DropTable(
-                name: "Search");
+                name: "Searches");
 
             migrationBuilder.DropTable(
                 name: "Verifies");
 
-            migrationBuilder.RenameColumn(
-                name: "EnrolmentId",
-                table: "Fingerprints",
-                newName: "PersonId");
+            migrationBuilder.DropTable(
+                name: "Enrolments");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Fingerprints_EnrolmentId",
-                table: "Fingerprints",
-                newName: "IX_Fingerprints_PersonId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Fingerprints_People_PersonId",
-                table: "Fingerprints",
-                column: "PersonId",
-                principalTable: "People",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropTable(
+                name: "People");
         }
     }
 }

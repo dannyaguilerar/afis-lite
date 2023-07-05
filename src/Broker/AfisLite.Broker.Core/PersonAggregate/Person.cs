@@ -12,7 +12,7 @@ namespace AfisLite.Broker.Core.PersonAggregate
         public string UniqueId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         public virtual ICollection<Enrolment> Enrolments { get; set; } = new HashSet<Enrolment>();
         public virtual ICollection<Search> Searches { get; set; } = new HashSet<Search>();
