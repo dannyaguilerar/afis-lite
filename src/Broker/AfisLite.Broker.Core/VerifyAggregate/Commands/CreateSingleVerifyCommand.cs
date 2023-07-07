@@ -3,7 +3,7 @@ using MediatR;
 
 namespace AfisLite.Broker.Core.VerifyAggregate.Commands
 {
-    public class CreateSingleVerifyCommand : IRequest<VerifyResponse>
+    public class CreateSingleVerifyCommand : IRequest<VerificationResponse>
     {
         public int CandidatePersonId { get; set; }
         public string ProbeBase64 { get; set; }
