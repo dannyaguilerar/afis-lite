@@ -6,6 +6,6 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate.Models
     {
         public int EnrolmentId { get; set; }
         public int PersonId { get; set; }
-        public IEnumerable<FingerprintRecord> Fingerprints { get; set; } = Enumerable.Empty<FingerprintRecord>();
+        public IEnumerable<FingerprintRecord> Fingerprints { get; set; } = [];
     }
 }
