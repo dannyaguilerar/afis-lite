@@ -10,11 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AfisLite.Broker.Infra", "Br
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AfisLite.Broker.Api", "Broker\AfisLite.Broker.Api\AfisLite.Broker.Api.csproj", "{A2CC6BA1-AF9C-4CD0-8E8C-0EEB15764007}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{9966F261-8FA4-4C8F-8978-9244EE849745}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\.dockerignore = Docker\.dockerignore
-		Docker\docker-compose.yaml = Docker\docker-compose.yaml
-	EndProjectSection
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FF5D97CF-4871-4F74-A6AA-98B0B9944B2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +30,10 @@ Global
 		{A2CC6BA1-AF9C-4CD0-8E8C-0EEB15764007}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2CC6BA1-AF9C-4CD0-8E8C-0EEB15764007}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2CC6BA1-AF9C-4CD0-8E8C-0EEB15764007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF5D97CF-4871-4F74-A6AA-98B0B9944B2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF5D97CF-4871-4F74-A6AA-98B0B9944B2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF5D97CF-4871-4F74-A6AA-98B0B9944B2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF5D97CF-4871-4F74-A6AA-98B0B9944B2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

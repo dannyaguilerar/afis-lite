@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: afisliteadmin
+      POSTGRES_PASSWORD: afisliteadmin
+      POSTGRES_DB: afislite
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  afislite.broker.api:
+    image: ${DOCKER_REGISTRY-}afislitebrokerapi
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: afislite
+      DB_PASSWORD: afisliteadmin
+      DB_NAME: afisliteadmin
+    build:
+      context: .
+      dockerfile: Broker/AfisLite.Broker.Api/Dockerfile
+    ports:
+      - "8090:8080"
+volumes:
+  postgres_data:

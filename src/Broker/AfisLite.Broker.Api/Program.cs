@@ -1,6 +1,9 @@
 using AfisLite.Broker.Core.EnrolmentAggregate;
 using AfisLite.Broker.Infra;
+using AfisLite.Broker.Infra.Data;
 using AfisLite.Broker.Infra.Middleware;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -15,23 +18,24 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
 
-    // Add services to the container.
-
     builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-        });
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        });    
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddInfrastructure();
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssemblyContaining<Enrolment>());
-
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AfisLiteDbContext>();
+        db.Database.Migrate();
+    }
+
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
