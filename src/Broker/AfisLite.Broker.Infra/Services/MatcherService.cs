@@ -40,7 +40,7 @@ namespace AfisLite.Broker.Infra.Services
             return response;
         }
 
-        public MatcherResponse MatcheFingerprints(IEnumerable<FingerprintRecord> probe, IEnumerable<FingerprintRecord> candidate)
+        public MatcherResponse MatchFingerprints(IEnumerable<FingerprintRecord> probe, IEnumerable<FingerprintRecord> candidate)
         {
             FingerprintMatcher matcher;
             IList<double> scores = new List<double>();

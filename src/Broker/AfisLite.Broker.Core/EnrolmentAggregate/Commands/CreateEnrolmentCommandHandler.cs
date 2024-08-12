@@ -59,7 +59,7 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate.Commands
         {
             foreach (var candidate in candidates)
             {
-                var response = _matcherService.MatcheFingerprints(probeFingerprints, candidate.Fingerprints);
+                var response = _matcherService.MatchFingerprints(probeFingerprints, candidate.Fingerprints);
                 if (response.IsMatch)
                 {
                     return candidate.PersonId;
