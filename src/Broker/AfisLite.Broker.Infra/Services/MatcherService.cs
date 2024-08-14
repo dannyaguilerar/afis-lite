@@ -40,10 +40,25 @@ namespace AfisLite.Broker.Infra.Services
             return response;
         }
 
+        public MatcherResponse MatchProbeTemplateWithCandidateTemplates(byte[] probe, IEnumerable<byte[]> candidateTemplates)
+        {
+            FingerprintMatcher matcher;
+            List<double> scores = [];
+            foreach (var candidate in candidateTemplates)
+            {
+                var pt = new FingerprintTemplate(probe);
+                matcher = new FingerprintMatcher(pt);
+                var bt = new FingerprintTemplate(candidate);
+                scores.Add(matcher.Match(bt));
+            }
+            double score = scores.Max();
+            return new MatcherSuccessResponse(score >= threshold, score);
+        }
+
         public MatcherResponse MatchFingerprints(IEnumerable<FingerprintRecord> probe, IEnumerable<FingerprintRecord> candidate)
         {
             FingerprintMatcher matcher;
-            IList<double> scores = new List<double>();
+            List<double> scores = [];
             foreach (var record in probe)
             {
                 var pt = new FingerprintTemplate(record.Template);

@@ -4,9 +4,9 @@ using Ardalis.Specification;
 
 namespace AfisLite.Broker.Core.EnrolmentAggregate.Specifications
 {
-    public class EnrolmentRecordSpec : Specification<Enrolment, EnrolmentRecord>
+    public class EnrolmentRecordsSpec : Specification<Enrolment, EnrolmentRecord>
     {
-        public EnrolmentRecordSpec()
+        public EnrolmentRecordsSpec()
         {
             
             Query.Where(e => e.Status == EnrolmentStatus.Principal)

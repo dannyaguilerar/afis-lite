@@ -5,7 +5,7 @@ namespace AfisLite.Broker.Core.VerifyAggregate.Commands
 {
     public class CreateSingleVerifyCommand : IRequest<VerificationResponse>
     {
-        public int CandidatePersonId { get; set; }
-        public string ProbeBase64 { get; set; }
+        public required int CandidatePersonId { get; set; }
+        public required string ProbeBase64 { get; set; }        
     }
 }

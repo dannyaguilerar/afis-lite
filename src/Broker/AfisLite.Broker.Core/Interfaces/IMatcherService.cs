@@ -9,6 +9,8 @@ namespace AfisLite.Broker.Core.Interfaces
         MatcherResponse MatchTemplates(byte[] probeTemplate, byte[] candidateTemplate);
 
         MatcherResponse MatchFingerprints(IEnumerable<FingerprintRecord> probe, IEnumerable<FingerprintRecord> candidate);
+
+        MatcherResponse MatchProbeTemplateWithCandidateTemplates(byte[] probeTemplate, IEnumerable<byte[]> candidateTemplates);
     }
 
     public abstract class MatcherResponse

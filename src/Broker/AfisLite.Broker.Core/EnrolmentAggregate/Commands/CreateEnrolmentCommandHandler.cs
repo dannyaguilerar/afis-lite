@@ -34,7 +34,7 @@ namespace AfisLite.Broker.Core.EnrolmentAggregate.Commands
         {
             var probeFingerprints = ExtractFingerprints(request.Fingerprints);
 
-            var candidates = await _enrolmentRepository.ListAsync(new EnrolmentRecordSpec(), cancellationToken);
+            var candidates = await _enrolmentRepository.ListAsync(new EnrolmentRecordsSpec(), cancellationToken);
             var matchedPersonId = FindMatchingPersonId(probeFingerprints, candidates);
             var (personId, status) = await GetPersonIdAndStatus(request, matchedPersonId, cancellationToken);
 
